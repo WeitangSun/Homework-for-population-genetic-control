@@ -1,0 +1,68 @@
+import random
+class chr:
+    def __init__(self,t,mu=[True,True,True,True,True,True],p=0.01):
+        self.c=mu
+        self.t=t
+        self.p=p
+        self.l=len(mu)
+    def insert(self):
+        alllocation=[]
+        for j in range(len(self.c)):
+            if self.c[j]:
+                alllocation.append(j)
+        loc=random.randint(0,len(alllocation)-1)
+        self.c[alllocation[loc]]=False
+    def mutation(self):
+        for i in range(self.l):
+            self.c.append(self.c[i])
+            for j in range(len(self.c)):
+                if (i==j or i+self.l==j) and ((not self.c[j]) and random.random()<self.p):
+                    self.c[j]=True
+                    self.insert()
+        if random.random()<0.5:
+            self.c=self.c[:self.l]
+        else:
+            self.c=self.c[self.l:]
+    def number(self):
+        n=0
+        for i in self.c:
+            if not i:
+                n+=1
+        return n
+    def number_n(self,n):
+        if self.c[n]:
+            return 0
+        else:
+            return 1
+def main(time=1000):
+    length=20
+    a=[]
+    for i in range(100):
+        lis=[True for j in range(length)]
+        lis[random.randint(0,len(lis)-1)]=False
+        a.append(chr(10,lis))
+    for k in range(time):
+        for ind in a:
+            ind.mutation()
+        """s = 0
+        for ind in a:
+            s += ind.number_n(5)
+        s = s / len(a)
+        s1 = 0
+        for ind in a:
+            s1 += ind.number_n(18)
+        s1 = s1 / len(a)
+        print(s,end=' ')
+        print(s1)"""
+    for j in range(length):
+        s1 = 0
+        for ind in a:
+            s1 += ind.number_n(j)
+        s1 = s1 / len(a)
+        print(s1, end=' ')
+
+
+main(1000)
+
+
+
