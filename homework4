@@ -1,0 +1,58 @@
+import numpy
+import matplotlib.pyplot as plt
+def main():
+    #genotypes=["w","d"]
+    genes=[0.25,0.75]
+    i=0
+    while(1):
+        new=[genes[0],genes[1]*genes[1]]
+        genes=numpy.multiply(new,1/(new[0]+new[1]))
+        print(i+1,end=' ')
+        print(genes)
+        i+=1
+        if genes[0]>=0.99:
+            return
+    return
+def resistance():
+    #genotypes=["ww infected","wr infected","rr infected","ww noninfected","wr noninfected","rr noninfected"]
+    result=[[],[],[],[],[],[]]
+    genoypes=[0,0,0.5,0,0,0.5]
+    fitness=1
+    fitness_r=1
+    fitnesses=[fitness,fitness,fitness_r,1,1,1]
+    resistance_rate=0.24
+    # 0 lethal = 100% incompatibility
+    lethal=0
+
+    i=0
+    while(1):
+        #gametesgenotype =["wi","ri","wn","rn"]
+        gametes=[genoypes[0]+genoypes[1]*0.5,genoypes[2]+genoypes[1]*0.5,genoypes[3]+genoypes[4]*0.5,genoypes[5]+genoypes[4]*0.5]
+        new=[gametes[0]*(gametes[0]+gametes[2]),
+             gametes[0]*(gametes[1]+gametes[3])+gametes[1]*(gametes[0]+gametes[2]),
+             gametes[1]*(gametes[1]+gametes[3]),
+             gametes[2] * (gametes[0]*lethal + gametes[2]),
+             gametes[2] * (gametes[1]*lethal + gametes[3]) + gametes[3] * (gametes[0]*lethal + gametes[2]),
+             gametes[3] * (gametes[1]*lethal + gametes[3])
+             ]
+        new[4]+=new[1]*resistance_rate
+        new[5]+=new[2]*resistance_rate
+        new[1]=new[1]*(1-resistance_rate)
+        new[2] = new[2] * (1 - resistance_rate)
+
+        new=numpy.multiply(numpy.array(new),numpy.array(fitnesses))
+        genoypes=numpy.multiply(new,1/(new[0]+new[1]+new[2]+new[3]+new[4]+new[5]))
+        #print(i+1,end=' ')
+        #print(genoypes)
+        for j in range(6):
+            result[j].append(genoypes[j])
+        i+=1
+
+        if i>200:
+            for j in range(6):
+                plt.plot(range(len(result[j])),result[j])
+            plt.legend(["ww infected","wr infected","rr infected","ww noninfected","wr noninfected","rr noninfected"])
+            plt.show()
+            break
+    return
+resistance()
